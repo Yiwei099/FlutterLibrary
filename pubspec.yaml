@@ -1,0 +1,135 @@
+name: xiandun
+description: "弦盾 by flutter module"
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+#
+# This version is used _only_ for the Runner app, which is used if you just do
+# a `flutter run` or a `flutter make-host-app-editable`. It has no impact
+# on any other native host app that you embed your Flutter project into.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Json
+  json_annotation: ^4.9.0
+  # 权限管理
+  permission_handler: ^11.4.0
+  # 状态管理
+  get: ^4.7.2
+  # 轻量级数据缓存
+  shared_preferences: ^2.5.2
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+#  flutter_svg: ^1.1.6
+  flutter_screenutil: ^5.9.3
+  badges: ^3.1.2
+  webview_flutter: ^4.10.0
+  qr_code_scanner_plus: ^2.0.10+1
+
+#  mobile_scanner: ^6.0.7
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  json_serializable: ^6.8.0
+  build_runner: ^2.4.13
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+flutter:
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add Flutter specific assets to your application, add an assets section,
+  # like this:
+  assets:
+     - assets/icons/home_selected.png
+     - assets/icons/home_unselected.png
+     - assets/icons/authorize_unselected.png
+     - assets/icons/authorize_selected.png
+     - assets/icons/mine_selected.png
+     - assets/icons/mine_unselected.png
+     - assets/icons/scan.png
+     - assets/icons/about.png
+     - assets/icons/account.png
+     - assets/icons/back.png
+     - assets/icons/lock.png
+     - assets/icons/authentication.png
+     - assets/icons/certificate.png
+     - assets/icons/next.png
+     - assets/icons/next_v1.png
+     - assets/icons/notice.png
+     - assets/icons/setting.png
+     - assets/icons/profile.png
+     - assets/icons/badge.png
+     - assets/icons/list_authorize.png
+     - assets/icons/list_car.png
+     - assets/icons/agreement.png
+     - assets/icons/contact.png
+     - assets/icons/copyright.png
+     - assets/icons/privacy.png
+     - assets/icons/version.png
+     # Image
+     - assets/images/bg_home.png
+     - assets/images/banner_mine.png
+     - assets/images/empty.png
+     - assets/images/fox.png
+     - assets/images/bg_detail.png
+     - assets/images/bg_certificate.png
+  #   - images/a_dot_ham.jpeg
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package
+
+  # To add Flutter specific custom fonts to your application, add a fonts
+  # section here, in this "flutter" section. Each entry in this list should
+  # have a "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
+
+
+  # This section identifies your Flutter project as a module meant for
+  # embedding in a native host app.  These identifiers should _not_ ordinarily
+  # be changed after generation - they are used to ensure that the tooling can
+  # maintain consistency when adding or modifying assets and plugins.
+  # They also do not have any bearing on your native host application's
+  # identifiers, which may be completely independent or the same as these.
+  module:
+    androidX: true
+    androidPackage: com.mrdata.xd.xiandun
+    iosBundleIdentifier: com.mrdata.xd.xiandun
