@@ -8,6 +8,7 @@ class SecondaryConfirmationDialog extends StatelessWidget {
   final String content;
   final String cancelText;
   final String confirmText;
+  final TextAlign contentAlign;
   final VoidCallback onConfirm;
 
   const SecondaryConfirmationDialog({
@@ -16,6 +17,7 @@ class SecondaryConfirmationDialog extends StatelessWidget {
     required this.content,
     this.cancelText = '取消',
     this.confirmText = '确认',
+    this.contentAlign = TextAlign.center,
     required this.onConfirm,
   });
 

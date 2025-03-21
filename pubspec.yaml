@@ -39,6 +39,8 @@ dependencies:
   badges: ^3.1.2
   webview_flutter: ^4.10.0
   qr_code_scanner_plus: ^2.0.10+1
+  dio: ^5.8.0+1
+  fluttertoast: ^8.2.12
 
 #  mobile_scanner: ^6.0.7
 

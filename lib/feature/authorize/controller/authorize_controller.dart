@@ -74,12 +74,6 @@ class AuthorizeController extends GetxController {
     ),
   ];
 
-  @override
-  void onInit() {
-    super.onInit();
-    debugPrint('onInit：$hashCode');
-  }
-
   void checkCameraPermission() async {
     // 检查相机权限
     final status = await Permission.camera.status;

@@ -78,8 +78,35 @@ buildscript {
 8. [mobile_scanner(待定)](https://pub.dev/packages/mobile_scanner)：包太大 (测试使用该库的 release_apk = 34.4 M；使用 qr_code_scanner_plus 的 release_apk = 24.9M)
 9. [flutter_svg(待定)](https://pub.dev/packages/flutter_svg)：项目目前没使用 svg
 
-### 部分三方库拆坑记录
-1. mobile_scanner 使用非捆绑版本
+### 踩坑记录
+1. Android AndroidManifest.xml 配置
+```
+    <!-- 允许网络请求 -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 允许访问文件 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 允许访问摄像头 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.hardware.camera.autofocus" />
+
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.front.autofocus"
+        android:required="true" />
+
+
+<application
+    android:usesCleartextTraffic="true" // 允许 http 请求
+>
+</application>
+```
+2. mobile_scanner 使用非捆绑版本
 ```
 // 1. 在 /android/gradle.propertie 内新增
 // ...
@@ -87,6 +114,5 @@ dev.steenbakker.mobile_scanner.useUnbundled=true
 
 // 2. 在 app/build.gradle 新增依赖
 implementation com.google.mlkit:barcode-scanning:17.2.0
-
 ```
 
