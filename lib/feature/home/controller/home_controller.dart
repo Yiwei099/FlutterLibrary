@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:xiandun/constants/constants.dart';
+import 'package:xiandun/http/services/home_service.dart';
 import 'package:xiandun/utils/share_perferences_util.dart';
 import 'package:xiandun/widget/dialog/first_install_dialog.dart';
 
 class HomeController extends GetxController {
+  final HomeService homeService = HomeService();
+
   var currentIndex = 0.obs;
   var count = 1.obs;
   var title = ''.obs;
@@ -49,6 +52,7 @@ class HomeController extends GetxController {
     if (status.isGranted) {
       // 已经授权，可以进行文件操作
       debugPrint('文件权限已授权');
+      homeService.getAppVersionInfo();
     } else if (status.isDenied) {
       final result = await Permission.storage.request();
       if (result.isDenied) {
@@ -60,6 +64,10 @@ class HomeController extends GetxController {
         }
       }
     }
+  }
+
+  void notifyReadNum() {
+    homeService.getRedNum();
   }
 
   void changeIndex(int index) {

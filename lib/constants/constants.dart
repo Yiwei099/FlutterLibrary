@@ -11,6 +11,8 @@ class Constants {
     return _instance!;
   }
 
+  static const String appName = '数据确权app';
+
   //后端地址测试环境
   static const String baseUrlDevMR = 'http://218.201.64.200:11080/carsystem-car/';
   //后端地址正式环境
@@ -40,6 +42,11 @@ class Constants {
 
   // sharePreferenceKey
   static const String spFirstInstall = 'first_install';
+  static const String spToken = 'token';
+  static const String spToken1 = 'token1';
+  static const String spAAId = 'aaID';
+  static const String spKeyId = 'keyID';
+  static const String spUserId = 'keyID';
 
   // 通道名称
   static const String nativeChannel = 'com.mrdata.xd/native';

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -7,57 +6,40 @@ import 'package:xiandun/bean/base_api_response.dart';
 import 'package:xiandun/constants/constants.dart';
 
 class HttpUtil {
-  static final HttpUtil _instance = HttpUtil._internal();
+  //静态属性——该类的实例
+  static HttpUtil? _instance;
   late Dio _dio;
 
-  // 单例模式
-  factory HttpUtil() {
-    return _instance;
-  }
-
-  String _getBaseUrlMR() {
-    if(kDebugMode) {
-      return Constants.baseUrlDevMR;
-    } else {
-      return Constants.baseUrlMR;
-    }
-  }
-
-  String _getBaseUrlLogin() {
-    if(kDebugMode) {
-      return Constants.baseUrlLoginDev;
-    } else {
-      return Constants.baseUrlLogin;
-    }
-  }
-
-  // url 更新为明睿数据
-  void updateBaseUrlToMR() {
-    _dio.options.baseUrl = _getBaseUrlMR();
-  }
-
-  // 初始化
+  //私有的命名构造函数，确保类不能从外部被实例化
   HttpUtil._internal() {
+    _configDio();
+  }
+
+  static HttpUtil getInstance() {
+    _instance ??= HttpUtil._internal();
+    return _instance!;
+  }
+
+  // 初始化 Dio
+  void _configDio() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: _getBaseUrlLogin(), // API 基础地址
+        baseUrl: _getBaseUrlMR(), // API 基础地址
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'token': 'GnTi8AVRkgyhrr86ubshywBg695USrXfYP4dcz8eAsg=',
+        },// 请求头
         connectTimeout: const Duration(seconds: 10), // 连接超时时间
         receiveTimeout: const Duration(seconds: 10), // 接收超时时间
       ),
     );
-
-    // 默认请求头
-    _dio.options.headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
 
     // 添加拦截器
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
           // 请求前的逻辑
-          debugPrint('Request: ${options.method} ${options.path}');
+          debugPrint('Request: ${options.method} ${options.baseUrl}${options.path}');
           return handler.next(options);
         },
         onResponse: (response, handler) {
@@ -74,6 +56,29 @@ class HttpUtil {
     );
   }
 
+  // 获取明睿相关 URL
+  String _getBaseUrlMR() {
+    if(false) {
+      return Constants.baseUrlDevMR;
+    } else {
+      return Constants.baseUrlMR;
+    }
+  }
+
+  // 获取免密登录相关 URL
+  String _getBaseUrlLogin() {
+    if(false) {
+      return Constants.baseUrlLoginDev;
+    } else {
+      return Constants.baseUrlLogin;
+    }
+  }
+
+  // 免密登录后把 URL 更新为明睿数据
+  void updateBaseUrlToMR() {
+    _dio.options.baseUrl = _getBaseUrlMR();
+  }
+
   // 显示 Loading 弹窗
   void _showLoading() {
     Get.dialog(
@@ -88,27 +93,27 @@ class HttpUtil {
   }
 
   // 发起 GET 请求
-  Future<BaseApiResponse<T?>> get<T>(
+  Future<T?> get<T>(
     String path, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? params,
     bool showLoading = true,
     required T Function(Map<String, dynamic> json) fromJsonData,
   }) async {
     try {
       if (showLoading) _showLoading();
-
-      final response = await _dio.get(path, queryParameters: queryParameters);
-
+      final response = await _dio.get(path, queryParameters: params);
       if (showLoading) _hideLoading();
-
+      BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJson(response.data, fromJsonData);
       if (response.statusCode == 200) {
-        return BaseApiResponse.fromJson(response.data, fromJsonData);
+        return baseApiResponse.data;
       } else {
-        throw Exception('Failed to load data');
+        Fluttertoast.showToast(msg: '[${baseApiResponse.code}：${baseApiResponse.msg}]',toastLength: Toast.LENGTH_SHORT);
+        return null;
       }
-    } on DioException catch (e) {
+    }  catch (e) {
       if (showLoading) _hideLoading();
-      throw Exception('Request failed: ${e.message}');
+      debugPrint(e.toString());
+      return null;
     }
   }
 
@@ -121,23 +126,65 @@ class HttpUtil {
   }) async {
     try {
       if (showLoading) _showLoading();
-
       final response = await _dio.post(path, data: data);
-
       if (showLoading) _hideLoading();
-
       BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJson(response.data, fromJsonData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return baseApiResponse.data;
+      } else {
+        Fluttertoast.showToast(msg: '[${baseApiResponse.code}：${baseApiResponse.msg}]', toastLength: Toast.LENGTH_SHORT);
+        return null;
+      }
+    } catch (e) {
+      if (showLoading) _hideLoading();
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  postSimpleSync<T>(
+      String path, {
+        Map<String, dynamic>? data,
+        bool showLoading = true,
+      }) async {
+    try {
+      if (showLoading) _showLoading();
+      final response = await _dio.post(path, data: data);
+      if (showLoading) _hideLoading();
+      BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJsonSimple(response.data);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return baseApiResponse.data;
       } else {
         Fluttertoast.showToast(msg: baseApiResponse.msg, toastLength: Toast.LENGTH_SHORT);
         return null;
       }
-    } on DioException catch (e) {
+    } catch (e) {
       if (showLoading) _hideLoading();
-      throw Exception('Request failed: ${e.message}');
+      debugPrint(e.toString());
+      return null;
     }
   }
 
-  // 其他请求方法（如 PUT、DELETE 等）可以类似实现
+  postSimple<T>(
+      String path, {
+        Map<String, dynamic>? data,
+        bool showLoading = true,
+      }) async {
+    try {
+      if (showLoading) _showLoading();
+      final response = await _dio.post(path, data: data);
+      if (showLoading) _hideLoading();
+      BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJsonSimple(response.data);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return baseApiResponse.data;
+      } else {
+        Fluttertoast.showToast(msg: baseApiResponse.msg, toastLength: Toast.LENGTH_SHORT);
+        return null;
+      }
+    } catch (e) {
+      if (showLoading) _hideLoading();
+      debugPrint(e.toString());
+      return null;
+    }
+  }
 }

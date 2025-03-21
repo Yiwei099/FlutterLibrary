@@ -41,14 +41,6 @@ class SharedPreferencesUtil {
     return _prefs.setStringList(key, value);
   }
 
-  // 同步存储数据
-  void setStringSync(String key, String value) {
-    _prefs.setString(key, value).then((_) {
-
-    }).catchError((_) {
-
-    });
-  }
 
   // 读取数据
   String getString(String key, {String defaultValue = ''}) {

@@ -34,7 +34,9 @@ class StartAuthorizeWidget extends StatelessWidget {
             right: 0,
             child: Center(
               child: TextButton.icon(
-                onPressed: () => {go2Scan()},
+                onPressed: () => {
+                  go2Scan()
+                },
                 label: Text('快速授权', style: TextStyle(fontSize: 10.sp)),
                 icon: Image.asset(IconPath.scan, width: 20, height: 20),
                 style: TextButton.styleFrom(

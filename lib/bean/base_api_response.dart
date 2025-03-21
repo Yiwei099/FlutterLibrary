@@ -15,4 +15,13 @@ class BaseApiResponse<T> {
       data: fromJsonData(json['data']),
     );
   }
+
+  factory BaseApiResponse.fromJsonSimple(
+      Map<String, dynamic> json) {
+    return BaseApiResponse(
+      msg: json['msg'],
+      code: json['code'],
+      data: json['data'],
+    );
+  }
 }
