@@ -23,6 +23,10 @@ class GlobalDataManager {
     return _keyId;
   }
 
+  String getUserId() {
+    return _userId;
+  }
+
   void _updateUserId(String userId) {
     _userId = userId;
     SharedPreferencesUtil.getInstance().setString(Constants.spUserId, userId);

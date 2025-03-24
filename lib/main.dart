@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           themeMode: ThemeMode.system,
           defaultTransition: Transition.rightToLeft,
           initialRoute: Routes.home,
-          getPages: Routes.getInstance().PAGES,
+          getPages: Routes.getInstance().pages,
         );
       },
     );

@@ -53,6 +53,7 @@ class HomeController extends GetxController {
       // 已经授权，可以进行文件操作
       debugPrint('文件权限已授权');
       homeService.getAppVersionInfo();
+      notifyReadNum();
     } else if (status.isDenied) {
       final result = await Permission.storage.request();
       if (result.isDenied) {
@@ -67,7 +68,15 @@ class HomeController extends GetxController {
   }
 
   void notifyReadNum() {
-    homeService.getRedNum();
+    homeService.getRedNum(
+      onSuccess: (count) {
+        this.count.value = count;
+        debugPrint('获取到未读数量：$count');
+      },
+      onError: () {
+
+      }
+    );
   }
 
   void changeIndex(int index) {

@@ -33,7 +33,7 @@ class Routes {
   }
 
 
-  List<GetPage> PAGES = [
+  List<GetPage> pages = [
     GetPage(name: Routes.home, page: () => const HomeScreen()),
     GetPage(name: Routes.authorizeDetail, page: () => const AuthorizeDetailScreen()),
     GetPage(name: Routes.setting, page: () => const SettingScreen()),
