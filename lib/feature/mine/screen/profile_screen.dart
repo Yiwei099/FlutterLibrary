@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xiandun/constants/global_data_manager.dart';
+import 'package:xiandun/feature/home/controller/home_controller.dart';
 import 'package:xiandun/utils/colors.dart';
 import 'package:xiandun/utils/icon_path.dart';
 import 'package:xiandun/widget/com_app_bar.dart';
 
 import '../../../constants/route.dart';
 
+/// 个人资料
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -15,6 +18,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late HomeController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = Get.find<HomeController>();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: ComAppBar(title: '个人资料'), body: _convertBody());
@@ -26,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           const SizedBox(height: 30),
           InkWell(
-            onTap: () => {print('换头像')},
+            onTap: () => {debugPrint('换头像')},
             child: CircleAvatar(
               radius: 40,
               backgroundImage: AssetImage(IconPath.profile),
@@ -35,7 +46,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 6),
           Text('点击更换头像', style: TextStyle(color: Colors.black, fontSize: 7.sp)),
           InkWell(
-            onTap: () => {Get.toNamed(Routes.modifyProfile)},
+            onTap: () async {
+              var result = await Get.toNamed(Routes.modifyProfile);
+              if(result['result_data']) {
+                _controller.getUserInfoFormCache();
+              }
+            },
             child: Padding(
               padding: const EdgeInsets.only(
                 left: 10,
@@ -46,8 +62,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Row(
                 children: [
                   const Text('昵称'),
-                  const SizedBox(width: 10,),
-                  Expanded(child: const Text('周杰伦',textAlign: TextAlign.end,)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Obx(() {
+                      return Text(
+                        _controller.nickName.value,
+                        textAlign: TextAlign.end,
+                      );
+                    }),
+                  ),
                   Image.asset(IconPath.next, width: 16, height: 16),
                 ],
               ),

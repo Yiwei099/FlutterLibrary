@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
 import 'package:xiandun/bean/base_api_response.dart';
 import 'package:xiandun/constants/constants.dart';
 
@@ -181,8 +181,8 @@ class HttpUtil {
             onResponse.data,
             fromJsonData,
           );
-          // if (showLoading) _hideLoading();
-          if (onResponse.statusCode == 200 || onResponse.statusCode == 201) {
+          if (showLoading) _hideLoading();
+          if (baseApiResponse.code == 200 || onResponse.statusCode == 201) {
             onSuccess(baseApiResponse.data);
           } else {
             Fluttertoast.showToast(
@@ -193,7 +193,40 @@ class HttpUtil {
           }
         })
         .catchError((onError) {
-          // if (showLoading) _hideLoading();
+          if (showLoading) _hideLoading();
+          onError();
+        });
+  }
+
+  void postByFormData<T>(
+    String path,
+    Function(T?) onSuccess,
+    Function() onError, {
+    required FormData data,
+    bool showLoading = true,
+    required T Function(Map<String, dynamic> json) fromJsonData,
+  }) {
+    if (showLoading) _showLoading();
+    _dio
+        .post(path, data: data)
+        .then((onResponse) {
+          BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJson(
+            onResponse.data,
+            fromJsonData,
+          );
+          if (showLoading) _hideLoading();
+          if (baseApiResponse.code == 200 || onResponse.statusCode == 201) {
+            onSuccess(baseApiResponse.data);
+          } else {
+            Fluttertoast.showToast(
+              msg: '[${baseApiResponse.code}：${baseApiResponse.msg}]',
+              toastLength: Toast.LENGTH_SHORT,
+            );
+            onError();
+          }
+        })
+        .catchError((onError) {
+          if (showLoading) _hideLoading();
           onError();
         });
   }

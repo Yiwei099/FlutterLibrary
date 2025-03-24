@@ -1,3 +1,4 @@
+import 'package:xiandun/bean/user_info.dart';
 import 'package:xiandun/constants/constants.dart';
 import 'package:xiandun/utils/share_perferences_util.dart';
 
@@ -13,16 +14,18 @@ class GlobalDataManager {
     return _instance!;
   }
 
+  UserInfo? _userInfo;
+
   String _token = 'GnTi8AVRkgyhrr86ubshywBg695USrXfYP4dcz8eAsg=';
   String _token1 = '';
-  String _aaId = '';
-  String _keyId = 'EBA0#0001#YW5pY2VydC1taWFubWkta2V5LUpESmhKREV3SkhSdFNrUlhSV0pvU1hGRFREUkpOSGsyU3pNdlFuVQ';
+  String _aaId = 'EBA0#0001';
+  String _keyId = 'YW5pY2VydC1taWFubWkta2V5LUpESmhKREV3SkhSdFNrUlhSV0pvU1hGRFREUkpOSGsyU3pNdlFuVQ';
   String _userId = '';
 
   String anmiID = 'aOJ1BufizgQtwJMAPeobFmMygmUEUQ9cDK4QTorasRo=';
 
   String getKeyId() {
-    return _keyId;
+    return '$_aaId#$_keyId';
   }
 
   String getUserId() {
@@ -58,7 +61,7 @@ class GlobalDataManager {
     return _token.isNotEmpty;
   }
 
-  void updateUserInfo(String userId,String token,String aaId,String keyId,String token1) {
+  void updateUserData(String userId,String token,String aaId,String keyId,String token1) {
     _updateUserId(userId);
     _updateAAId(aaId);
     _updateKeyId(keyId);
@@ -67,6 +70,14 @@ class GlobalDataManager {
   }
 
   void cleanLoginState() {
-    updateUserInfo('','','','','');
+    updateUserData('','','','','');
+  }
+
+  UserInfo? getUserInfo() {
+    return _userInfo;
+  }
+
+  void updateUserInfo(UserInfo? userInfo) {
+    _userInfo = userInfo;
   }
 }

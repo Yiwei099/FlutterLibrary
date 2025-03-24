@@ -57,7 +57,7 @@ class ChannelManager {
       _invokeMethod(_methodCreateRegistrationResponse, paramMap);
 
   //获取证书公钥
-  void getCertificateKey(Map<String,String> paramMap) =>  _invokeMethod(_methodGetCertificateKey, paramMap);
+  getCertificateKey(Map<String,String> paramMap) =>  _invokeMethod(_methodGetCertificateKey, paramMap);
 
   void setupMethodCallHandler(Future<dynamic> Function(MethodCall call) call) {
     _methodChannel.setMethodCallHandler(call);

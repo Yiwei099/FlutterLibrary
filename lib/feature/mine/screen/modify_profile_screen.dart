@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:xiandun/feature/home/controller/home_controller.dart';
+import 'package:xiandun/feature/mine/controller/mine_controller.dart';
 import 'package:xiandun/widget/com_app_bar.dart';
 
 import '../../../utils/colors.dart';
 
-/// 编辑个人信息
+/// 设置昵称
 class ModifyProfileScreen extends StatefulWidget {
   const ModifyProfileScreen({super.key});
 
@@ -13,6 +16,24 @@ class ModifyProfileScreen extends StatefulWidget {
 }
 
 class _ModifyProfileScreenState extends State<ModifyProfileScreen> {
+  late MineController _controller;
+  late HomeController _homeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = Get.put(MineController());
+    _homeController = Get.find<HomeController>();
+
+    _controller.bindNickNameToTextController(_homeController.nickName.value);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Get.delete<MineController>();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: ComAppBar(title: '设置昵称',), body: _convertBody());
@@ -24,7 +45,8 @@ class _ModifyProfileScreenState extends State<ModifyProfileScreen> {
         Padding(
           padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
           child: TextField(
-            maxLength: 6,
+            controller: _controller.nickNameTextEditingController,
+            maxLength: 8,
             maxLines: 1,
             decoration: InputDecoration(counterText: ''),
           ),
@@ -34,7 +56,7 @@ class _ModifyProfileScreenState extends State<ModifyProfileScreen> {
           child: SizedBox(
             width: double.infinity,
             child: Text(
-              '最多6个字',
+              '最多8个字',
               textAlign: TextAlign.end,
               style: TextStyle(color: MyColors.color8790B4, fontSize: 6.sp),
             ),
@@ -43,7 +65,9 @@ class _ModifyProfileScreenState extends State<ModifyProfileScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              _controller.submitUserInfo();
+            },
             style: TextButton.styleFrom(
               foregroundColor: Colors.white,
               backgroundColor: MyColors.primary,

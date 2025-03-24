@@ -45,9 +45,10 @@ class RouteMiddleWare {
   }
 
   //跳转前判断是否已经登录
-  void redirectAfterLogin({required String name, dynamic args}) {
+  void redirectAfterLogin({required String name, dynamic args, Function(dynamic result)? getResult}) async{
     if (GlobalDataManager.getInstance().isLogin()) {
-      Get.toNamed(name, arguments: args);
+      var result = await Get.toNamed(name, arguments: args);
+      getResult?.call(result);
     } else {
       Get.dialog(
         barrierDismissible: false,

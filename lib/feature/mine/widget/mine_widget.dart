@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:xiandun/constants/global_data_manager.dart';
 import 'package:xiandun/constants/route.dart';
+import 'package:xiandun/feature/home/controller/home_controller.dart';
 import 'package:xiandun/utils/colors.dart';
 import 'package:xiandun/utils/icon_path.dart';
 import 'package:xiandun/utils/route_middleware.dart';
@@ -18,6 +20,14 @@ class MineWidget extends StatefulWidget {
 }
 
 class _MineWidgetState extends State<MineWidget> {
+  late HomeController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = Get.find<HomeController>();
+  }
+
   final List<PersonalCenterFunction> _functionArr = [
     PersonalCenterFunction(
       title: '个人证书查看',
@@ -71,6 +81,8 @@ class _MineWidgetState extends State<MineWidget> {
           () => {
             RouteMiddleWare.getInstance().redirectAfterLogin(
               name: Routes.profile,
+              getResult: (result){
+              }
             ),
           },
       child: Container(
@@ -93,10 +105,12 @@ class _MineWidgetState extends State<MineWidget> {
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Text(
-                      '周杰伦',
-                      style: TextStyle(color: Colors.white, fontSize: 8.sp),
-                    ),
+                    child: Obx(() {
+                      return Text(
+                        _controller.nickName.value,
+                        style: TextStyle(color: Colors.white, fontSize: 8.sp),
+                      );
+                    }),
                   ),
                   Row(
                     children: [

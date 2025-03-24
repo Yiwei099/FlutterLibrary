@@ -1,10 +1,11 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:xiandun/bean/user_info.dart';
 import 'package:xiandun/constants/constants.dart';
+import 'package:xiandun/constants/global_data_manager.dart';
 import 'package:xiandun/http/services/home_service.dart';
 import 'package:xiandun/utils/share_perferences_util.dart';
 import 'package:xiandun/widget/dialog/first_install_dialog.dart';
@@ -16,7 +17,10 @@ class HomeController extends GetxController {
   var count = 1.obs;
   var title = ''.obs;
 
-  final _titleArr = ['','授权','个人中心'];
+  var nickName = ''.obs;
+  var avatar = ''.obs;
+
+  final _titleArr = ['', '授权', '个人中心'];
 
   @override
   void onInit() async {
@@ -27,10 +31,13 @@ class HomeController extends GetxController {
   }
 
   void isFirstRun() {
-    if (SharedPreferencesUtil.getInstance().getBool(Constants.spFirstInstall, defaultValue: true)) {
+    if (SharedPreferencesUtil.getInstance().getBool(
+      Constants.spFirstInstall,
+      defaultValue: true,
+    )) {
       //未同意协议
       _showFirstRunDialog();
-    }else {
+    } else {
       //已同意协议
       _checkAllFilePermission();
     }
@@ -39,30 +46,30 @@ class HomeController extends GetxController {
   void _showFirstRunDialog() {
     Get.dialog(
       barrierDismissible: false,
-      FirstInstallDialog(onConfirm: () {
-        //开始业务逻辑
-        _checkAllFilePermission();
-      },),
+      FirstInstallDialog(
+        onConfirm: () {
+          //开始业务逻辑
+          _checkAllFilePermission();
+        },
+      ),
     );
   }
 
   // 获取全部文件权限
-  void _checkAllFilePermission() async{
+  void _checkAllFilePermission() async {
     final status = await Permission.storage.status;
     if (status.isGranted) {
       // 已经授权，可以进行文件操作
       debugPrint('文件权限已授权');
       homeService.getAppVersionInfo();
       notifyReadNum();
+      getUserInfo();
     } else if (status.isDenied) {
       final result = await Permission.storage.request();
       if (result.isDenied) {
         // 申请后还被拒绝，直接打开设置
-        if(Platform.isAndroid) {
-
-        } else if (Platform.isIOS){
-
-        }
+        if (Platform.isAndroid) {
+        } else if (Platform.isIOS) {}
       }
     }
   }
@@ -73,10 +80,21 @@ class HomeController extends GetxController {
         this.count.value = count;
         debugPrint('获取到未读数量：$count');
       },
-      onError: () {
-
-      }
+      onError: () {},
     );
+  }
+
+  void getUserInfo() {
+    homeService.getUserInfo((UserInfo? userInfo) {
+      GlobalDataManager.getInstance().updateUserInfo(userInfo);
+      nickName.value = userInfo?.nickname ?? '未登录';
+      avatar.value = userInfo?.avatar ?? '';
+    }, () {});
+  }
+
+  getUserInfoFormCache() {
+    nickName.value = GlobalDataManager.getInstance().getUserInfo()?.nickname ?? '';
+    avatar.value = GlobalDataManager.getInstance().getUserInfo()?.avatar ?? '';
   }
 
   void changeIndex(int index) {
