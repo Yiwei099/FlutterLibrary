@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:xiandun/bean/authorize_history_response_item.dart';
 import 'package:xiandun/constants/route.dart';
 import 'package:xiandun/utils/icon_path.dart';
 import 'package:xiandun/utils/route_middleware.dart';
@@ -23,6 +24,7 @@ class _AuthorizeHistoryWidgetState extends State<AuthorizeHistoryWidget> {
   void initState() {
     super.initState();
     _controller = Get.find<AuthorizeController>();
+    _controller.onRefreshAuthorizeHistoryData();
   }
 
   @override
@@ -59,7 +61,7 @@ class _AuthorizeHistoryWidgetState extends State<AuthorizeHistoryWidget> {
     );
   }
 
-  Widget _convertDataItem(AuthorizeHistory item) {
+  Widget _convertDataItem(AuthorizeHistoryResponseItem item) {
     int colorValue = 0;
     switch (item.status) {
       case AuthorizeHistory.STATUS_AUTHORIZED:
@@ -151,14 +153,12 @@ class _AuthorizeHistoryWidgetState extends State<AuthorizeHistoryWidget> {
   Widget _convertEmptyWidget() {
     return Align(
       alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 250),
-        child: Column(
-          children: [
-            Image.asset(ImagePath.emptyData, width: 150, height: 150),
-            const Text('暂无授权内容', style: TextStyle(color: Color(0xFF7E7E7E))),
-          ],
-        ),
+      child: Column(
+        children: [
+          const SizedBox(height: 200),
+          Image.asset(ImagePath.emptyData, width: 150, height: 150),
+          const Text('暂无授权内容', style: TextStyle(color: Color(0xFF7E7E7E))),
+        ],
       ),
     );
   }

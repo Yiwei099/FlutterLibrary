@@ -1,78 +1,42 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:xiandun/bean/authorize_history.dart';
+import 'package:xiandun/constants/global_data_manager.dart';
+import 'package:xiandun/http/services/authorize_service.dart';
 
 import '../../../constants/route.dart';
 
 class AuthorizeController extends GetxController {
-  List<AuthorizeHistory> authorizeHistoryList = [
-    AuthorizeHistory(
-      vin: '123456789087976',
-      authTime: '2023年10月10日',
-      status: '1',
-    ),
-    AuthorizeHistory(
-      vin: '443567654345324',
-      authTime: '2023年11月11日',
-      status: '-1',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '907878785677676',
-      authTime: '2023年11月11日',
-      status: '-2',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '967645645686656',
-      authTime: '2023年11月11日',
-      status: '-3',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '967645645686656',
-      authTime: '2023年11月11日',
-      status: '-3',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '967645645686656',
-      authTime: '2023年11月11日',
-      status: '-3',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '967645645686656',
-      authTime: '2023年11月11日',
-      status: '-3',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '967645645686656',
-      authTime: '2023年11月11日',
-      status: '-3',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '967645645686656',
-      authTime: '2023年11月11日',
-      status: '-3',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '967645645686656',
-      authTime: '2023年11月11日',
-      status: '-3',
-      red: true,
-    ),
-    AuthorizeHistory(
-      vin: '967645645686656',
-      authTime: '2023年11月11日',
-      status: '-3',
-      red: true,
-    ),
-  ];
+  late AuthorizeService authorizeService;
+
+  var authorizeHistoryList = [].obs;
+
+  var _pageIndex = 1;
+
+  @override
+  void onInit() {
+    super.onInit();
+    authorizeService = AuthorizeService();
+  }
+
+  void onRefreshAuthorizeHistoryData() {
+    if (GlobalDataManager.getInstance().isLogin()) {
+      getAuthorizeHistory(_pageIndex);
+    } else {
+      authorizeHistoryList.value = [];
+    }
+  }
+
+  void getAuthorizeHistory(int pageNum) {
+    authorizeService.getAuthorizeHistory(pageNum: pageNum, onSuccess: (pageIndex,onResponse) {
+      _pageIndex ++;
+      if(pageIndex == 1) {
+        authorizeHistoryList.assignAll(onResponse.retList);
+      } else {
+        authorizeHistoryList.addAll(onResponse.retList);
+      }
+    });
+  }
 
   void checkCameraPermission() async {
     // 检查相机权限

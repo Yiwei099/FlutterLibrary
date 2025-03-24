@@ -85,7 +85,7 @@ class ChannelManager {
     }
   }
 
-  // 调用原生方法通用处理方法 -- 异步(或无需关注结果)
+  // 调用原生方法通用处理方法 -- 异步(或无需关注结果，或自己异步处理结果)
   Future<T?>? _invokeMethod<T>(String method, [dynamic arguments]) {
     try {
       return _methodChannel.invokeMethod(method, arguments);

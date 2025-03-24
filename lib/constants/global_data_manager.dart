@@ -19,6 +19,8 @@ class GlobalDataManager {
   String _keyId = 'EBA0#0001#YW5pY2VydC1taWFubWkta2V5LUpESmhKREV3SkhSdFNrUlhSV0pvU1hGRFREUkpOSGsyU3pNdlFuVQ';
   String _userId = '';
 
+  String anmiID = 'aOJ1BufizgQtwJMAPeobFmMygmUEUQ9cDK4QTorasRo=';
+
   String getKeyId() {
     return _keyId;
   }
