@@ -1,19 +1,22 @@
+
+import 'package:FlutterLibrary/utils/colors.dart';
+import 'package:FlutterLibrary/utils/icon_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:xiandun/utils/colors.dart';
-import 'package:xiandun/utils/icon_path.dart';
 
 class ComAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showLeading;
   final List<Widget> actions;
+  final Function()? onPressed;
 
   const ComAppBar({
     super.key,
     required this.title,
     this.actions = const [],
     this.showLeading = true,
+    this.onPressed,
   });
 
   @override
@@ -32,7 +35,9 @@ class ComAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading:
           showLeading
               ? IconButton(
-                onPressed: () => {Get.back()},
+                onPressed: onPressed ?? () => {
+                  Get.back()
+                },
                 icon: Image.asset(IconPath.back, width: 15, height: 15),
               )
               : null,
@@ -41,5 +46,5 @@ class ComAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

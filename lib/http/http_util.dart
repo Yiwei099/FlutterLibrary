@@ -1,10 +1,17 @@
+import 'package:FlutterLibrary/bean/base_api_response.dart';
+import 'package:FlutterLibrary/constants/global_data_manager.dart';
+import 'package:FlutterLibrary/widget/dialog/loading_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
-import 'package:xiandun/bean/base_api_response.dart';
-import 'package:xiandun/constants/constants.dart';
 
+/// 网络请求工具类
+/// 1. 通用的请求头：包含 Content-Type、token，允许手动更新 token
+/// 2. 拦截器：允许在请求发出前再处理 baseUrl、Header 等参数
+/// 3. 默认连接和超时时间：10s
+/// 4. 通用的 GET、POST 请求
+/// 5. 允许单个请求控制 loading 显示
 class HttpUtil {
   //静态属性——该类的实例
   static HttpUtil? _instance;
@@ -20,14 +27,14 @@ class HttpUtil {
     return _instance!;
   }
 
-  // 初始化 Dio
+  /// 初始化 Dio
   void _configDio() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: _getBaseUrlMR(), // API 基础地址
+        baseUrl: _getBaseUrl(), // API 基础地址
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
-          'token': 'GnTi8AVRkgyhrr86ubshywBg695USrXfYP4dcz8eAsg=',
+          'token': GlobalDataManager.getInstance().getToken(),
         }, // 请求头
         connectTimeout: const Duration(seconds: 10), // 连接超时时间
         receiveTimeout: const Duration(seconds: 10), // 接收超时时间
@@ -38,9 +45,8 @@ class HttpUtil {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // 请求前的逻辑
           debugPrint(
-            'Request: ${options.method} ${options.baseUrl}${options.path}',
+            'Request: ${options.method} ${options.baseUrl}${options.path} data：${options.data}',
           );
           return handler.next(options);
         },
@@ -58,43 +64,35 @@ class HttpUtil {
     );
   }
 
-  // 获取明睿相关 URL
-  String _getBaseUrlMR() {
+  /// 获取明睿相关 URL
+  String _getBaseUrl() {
     if (false) {
-      return Constants.baseUrlDevMR;
+      return 'debugUrl';
     } else {
-      return Constants.baseUrlMR;
+      return 'releaseUrl';
     }
   }
 
-  // 获取免密登录相关 URL
-  String _getBaseUrlLogin() {
-    if (false) {
-      return Constants.baseUrlLoginDev;
-    } else {
-      return Constants.baseUrlLogin;
-    }
+
+  /// 更新 Token
+  void updateToken(String token) {
+    _dio.options.headers['token'] = token;
   }
 
-  // 免密登录后把 URL 更新为明睿数据
-  void updateBaseUrlToMR() {
-    _dio.options.baseUrl = _getBaseUrlMR();
-  }
-
-  // 显示 Loading 弹窗
+  /// 显示 Loading 弹窗
   void _showLoading() {
     Future.delayed(Duration.zero, () {
       if (Get.isDialogOpen == false) {
         // 确保没有其他对话框打开
         Get.dialog(
           barrierDismissible: false,
-          const Center(child: CircularProgressIndicator()),
+          const LoadingDialog(),
         );
       }
     });
   }
 
-  // 隐藏 Loading 弹窗
+  /// 隐藏 Loading 弹窗
   void _hideLoading() {
     if (Get.isDialogOpen == true) {
       // 确保有对话框打开
@@ -102,7 +100,7 @@ class HttpUtil {
     }
   }
 
-  // 发起 GET 请求
+  /// 发起 GET 请求
   Future<T?> get<T>(
     String path, {
     Map<String, dynamic>? params,
@@ -133,22 +131,27 @@ class HttpUtil {
     }
   }
 
-  // 发起 POST 请求 -- 同步
-  Future<T?> postSync<T>(
-    String path, {
-    Map<String, dynamic>? data,
+  /// 发起 POST 请求
+  /// [path] 请求路径
+  /// [data] 请求体
+  /// [showLoading] true - 显示 loading；false - 不显示 loading
+  /// [fromJsonData] 响应体 data 解析的模板，如果为 null，则不解析 data ，具体看 [BaseApiResponse.fromJsonSimple]
+  Future<T?> post<T>({
+    required String path,
+    required dynamic data,
     bool showLoading = true,
-    required T Function(Map<String, dynamic> json) fromJsonData,
+    T Function(Map<String, dynamic> json)? fromJsonData,
   }) async {
     try {
+      // 显示 loading
       if (showLoading) _showLoading();
       final response = await _dio.post(path, data: data);
       if (showLoading) _hideLoading();
-      BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJson(
-        response.data,
-        fromJsonData,
-      );
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      BaseApiResponse<T?> baseApiResponse =
+          fromJsonData != null
+              ? BaseApiResponse.fromJson(response.data, fromJsonData)
+              : BaseApiResponse.fromJsonSimple(response.data);
+      if (baseApiResponse.code == 200 || baseApiResponse.code == 201) {
         return baseApiResponse.data;
       } else {
         Fluttertoast.showToast(
@@ -164,106 +167,8 @@ class HttpUtil {
     }
   }
 
-  // 发起 POST 请求 -- 异步
-  void post<T>(
-    String path,
-    Function(T?) onSuccess,
-    Function() onError, {
-    Map<String, dynamic>? data,
-    bool showLoading = true,
-    required T Function(Map<String, dynamic> json) fromJsonData,
-  }) {
-    if (showLoading) _showLoading();
-    _dio
-        .post(path, data: data)
-        .then((onResponse) {
-          BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJson(
-            onResponse.data,
-            fromJsonData,
-          );
-          if (showLoading) _hideLoading();
-          if (baseApiResponse.code == 200 || onResponse.statusCode == 201) {
-            onSuccess(baseApiResponse.data);
-          } else {
-            Fluttertoast.showToast(
-              msg: '[${baseApiResponse.code}：${baseApiResponse.msg}]',
-              toastLength: Toast.LENGTH_SHORT,
-            );
-            onError();
-          }
-        })
-        .catchError((onError) {
-          if (showLoading) _hideLoading();
-          onError();
-        });
-  }
-
-  void postByFormData<T>(
-    String path,
-    Function(T?) onSuccess,
-    Function() onError, {
-    required FormData data,
-    bool showLoading = true,
-    required T Function(Map<String, dynamic> json) fromJsonData,
-  }) {
-    if (showLoading) _showLoading();
-    _dio
-        .post(path, data: data)
-        .then((onResponse) {
-          BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJson(
-            onResponse.data,
-            fromJsonData,
-          );
-          if (showLoading) _hideLoading();
-          if (baseApiResponse.code == 200 || onResponse.statusCode == 201) {
-            onSuccess(baseApiResponse.data);
-          } else {
-            Fluttertoast.showToast(
-              msg: '[${baseApiResponse.code}：${baseApiResponse.msg}]',
-              toastLength: Toast.LENGTH_SHORT,
-            );
-            onError();
-          }
-        })
-        .catchError((onError) {
-          if (showLoading) _hideLoading();
-          onError();
-        });
-  }
-
-  void postBySimpleResponse<T>(
-    String path, {
-    Map<String, dynamic>? data,
-    bool showLoading = true,
-    required Function(T?) onSuccess,
-    required Function() onError,
-  }) {
-    if (showLoading) _showLoading();
-    _dio
-        .post(path, data: data)
-        .then((onResponse) {
-          if (showLoading) _hideLoading();
-          BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJsonSimple(
-            onResponse.data,
-          );
-          if (onResponse.statusCode == 200 || onResponse.statusCode == 201) {
-            onSuccess(baseApiResponse.data);
-          } else {
-            Fluttertoast.showToast(
-              msg: '[${baseApiResponse.code}：${baseApiResponse.msg}]',
-              toastLength: Toast.LENGTH_SHORT,
-            );
-            onError();
-          }
-        })
-        .catchError((onError) {
-          if (showLoading) _hideLoading();
-          onError();
-        });
-  }
-
-  postSimpleSync<T>(
-    String path, {
+  postSimpleSyncCompleteResponse<T>({
+    required String path,
     Map<String, dynamic>? data,
     bool showLoading = true,
   }) async {
@@ -274,43 +179,7 @@ class HttpUtil {
       BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJsonSimple(
         response.data,
       );
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return baseApiResponse.data;
-      } else {
-        Fluttertoast.showToast(
-          msg: baseApiResponse.msg,
-          toastLength: Toast.LENGTH_SHORT,
-        );
-        return null;
-      }
-    } catch (e) {
-      if (showLoading) _hideLoading();
-      debugPrint(e.toString());
-      return null;
-    }
-  }
-
-  postSimple<T>(
-    String path, {
-    Map<String, dynamic>? data,
-    bool showLoading = true,
-  }) async {
-    try {
-      if (showLoading) _showLoading();
-      final response = await _dio.post(path, data: data);
-      if (showLoading) _hideLoading();
-      BaseApiResponse<T?> baseApiResponse = BaseApiResponse.fromJsonSimple(
-        response.data,
-      );
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return baseApiResponse.data;
-      } else {
-        Fluttertoast.showToast(
-          msg: baseApiResponse.msg,
-          toastLength: Toast.LENGTH_SHORT,
-        );
-        return null;
-      }
+      return baseApiResponse;
     } catch (e) {
       if (showLoading) _hideLoading();
       debugPrint(e.toString());

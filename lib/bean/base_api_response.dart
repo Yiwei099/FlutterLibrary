@@ -25,8 +25,15 @@ class BaseApiResponse<T> {
 
   factory BaseApiResponse.fromJsonSimple(
       Map<String, dynamic> json) {
+    if (json['data'] == null) {
+      return BaseApiResponse(
+        msg: json['message'] ?? json['msg'] ?? '',
+        code: json['code'],
+        data: null,
+      );
+    }
     return BaseApiResponse(
-      msg: json['msg'],
+      msg:  json['message'] ?? json['msg'] ?? '',
       code: json['code'],
       data: json['data'],
     );

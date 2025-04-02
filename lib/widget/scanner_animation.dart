@@ -1,5 +1,5 @@
+import 'package:FlutterLibrary/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:xiandun/utils/colors.dart';
 
 class ScannerAnimation extends StatefulWidget {
   final bool needBorder;
@@ -37,7 +37,7 @@ class _ScannerAnimation extends State<ScannerAnimation>
     return Center(
       child: CustomPaint(
         painter: ScannerPainter(_controller,_needBorder),
-        size: Size(250, 250),
+        size: const Size(250, 250),
       ),
     );
   }
@@ -61,7 +61,7 @@ class ScannerPainter extends CustomPainter {
     // 绘制扫描线
     final linePaint =
         Paint()
-          ..shader = LinearGradient(
+          ..shader = const LinearGradient(
             colors: [Colors.transparent, MyColors.primary, Colors.transparent],
             stops: [0.1, 0.5, 0.9],
           ).createShader(Rect.fromLTWH(0, 0, width, 3))
@@ -79,11 +79,11 @@ class ScannerPainter extends CustomPainter {
       ..strokeWidth = 3;
 
     // 绘制四角边框
-    final cornerLength = 25.0;
+    const cornerLength = 25.0;
 
     // 左上角
-    canvas.drawLine(Offset.zero, Offset(cornerLength, 0), borderPaint);
-    canvas.drawLine(Offset.zero, Offset(0, cornerLength), borderPaint);
+    canvas.drawLine(Offset.zero, const Offset(cornerLength, 0), borderPaint);
+    canvas.drawLine(Offset.zero, const Offset(0, cornerLength), borderPaint);
 
     // 右上角
     canvas.drawLine(

@@ -1,7 +1,3 @@
-import 'package:get/get.dart';
-import 'package:xiandun/constants/global_data_manager.dart';
-import 'package:xiandun/widget/dialog/secondary_confirmation_dialog.dart';
-
 // class RouteMiddleWare extends GetMiddleware {
 //   @override
 //   RouteSettings? redirect(String? route) {
@@ -34,48 +30,4 @@ class RouteMiddleWare {
     return _instance!;
   }
 
-  void redirect({bool condition = true, required String name, dynamic args, required Function() donT}) {
-    if (condition) {
-      //条件符合就跳转
-      Get.toNamed(name, arguments: args);
-    } else {
-      //否则
-      donT();
-    }
-  }
-
-  //跳转前判断是否已经登录
-  void redirectAfterLogin({required String name, dynamic args, Function(dynamic result)? getResult}) async{
-    if (GlobalDataManager.getInstance().isLogin()) {
-      var result = await Get.toNamed(name, arguments: args);
-      getResult?.call(result);
-    } else {
-      Get.dialog(
-        barrierDismissible: false,
-        SecondaryConfirmationDialog(
-          title: '提示',
-          content: '即将通过指纹完成登录操作，请确保身份和信息完整',
-          onConfirm: () {},
-        ),
-      );
-    }
-  }
-
-  void doAfterLogin({required Function() pass}) {
-    if (GlobalDataManager.getInstance().isLogin()) {
-      pass();
-    } else {
-      Get.dialog(
-        barrierDismissible: false,
-        SecondaryConfirmationDialog(
-          title: '提示',
-          content: '即将通过指纹完成登录操作，请确保身份和信息完整',
-          onConfirm: () {
-            Get.back();
-            pass();
-          },
-        ),
-      );
-    }
-  }
 }

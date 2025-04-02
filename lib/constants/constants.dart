@@ -11,23 +11,6 @@ class Constants {
     return _instance!;
   }
 
-  static const String appName = '数据确权app';
-
-  //后端地址测试环境
-  static const String baseUrlDevMR = 'http://218.201.64.200:11080/carsystem-car/';
-  //后端地址正式环境
-  static const String baseUrlMR = 'http://221.5.140.231:18081/carsystem-car/';
-  //注册和免密登录正式环境
-  static const String baseUrlLogin = 'http://221.5.140.231:18081/mianmi/';
-  //注册和免密登录测试环境
-  static const String baseUrlLoginDev = 'http://218.201.64.200:28081/mianmi/';
-
-  //隐私政策
-  static const String urlPrivacy = 'http://221.5.140.231:18081/dq-web/privacy/policy';
-  //用户协议
-  static const String agreement = 'http://221.5.140.231:18081/dq-web/service/protocol';
-  static const String noPasswordLoginPolicy = 'http://221.5.140.231:18081/dq-web/password/free/policy';
-
   // 组件传参 BundleKey
   static const String bundleData = 'bundle_data';
   static const String bundleData1 = 'bundle_data_1';
@@ -42,18 +25,4 @@ class Constants {
 
   // sharePreferenceKey
   static const String spFirstInstall = 'first_install';
-  static const String spToken = 'token';
-  static const String spToken1 = 'token1';
-  static const String spAAId = 'aaID';
-  static const String spKeyId = 'keyID';
-  static const String spUserId = 'keyID';
-
-  // 通道名称
-  static const String nativeChannel = 'com.mrdata.xd/native';
-
-  // 方法名称
-  static const String getBatteryLevel = 'getBatteryLevel';
-  static const String showToast = 'showToast';
-  static const String openSettings = 'openSettings';
-
 }

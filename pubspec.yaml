@@ -1,5 +1,5 @@
-name: xiandun
-description: "弦盾 by flutter module"
+name: FlutterLibrary
+description: "com.eiviayw.faster"
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -23,8 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # Json
-  json_annotation: ^4.9.0
   # 权限管理
   permission_handler: ^11.4.0
   # 状态管理
@@ -38,10 +36,9 @@ dependencies:
   flutter_screenutil: ^5.9.3
   badges: ^3.1.2
   webview_flutter: ^4.10.0
-  qr_code_scanner_plus: ^2.0.10+1
   dio: ^5.8.0+1
   fluttertoast: ^8.2.12
-
+  flutter_image_compress: ^2.4.0
 #  mobile_scanner: ^6.0.7
 
 
@@ -63,39 +60,8 @@ flutter:
   # To add Flutter specific assets to your application, add an assets section,
   # like this:
   assets:
-     - assets/icons/home_selected.png
-     - assets/icons/home_unselected.png
-     - assets/icons/authorize_unselected.png
-     - assets/icons/authorize_selected.png
-     - assets/icons/mine_selected.png
-     - assets/icons/mine_unselected.png
-     - assets/icons/scan.png
-     - assets/icons/about.png
-     - assets/icons/account.png
-     - assets/icons/back.png
-     - assets/icons/lock.png
-     - assets/icons/authentication.png
-     - assets/icons/certificate.png
-     - assets/icons/next.png
-     - assets/icons/next_v1.png
-     - assets/icons/notice.png
-     - assets/icons/setting.png
-     - assets/icons/profile.png
-     - assets/icons/badge.png
-     - assets/icons/list_authorize.png
-     - assets/icons/list_car.png
-     - assets/icons/agreement.png
-     - assets/icons/contact.png
-     - assets/icons/copyright.png
-     - assets/icons/privacy.png
-     - assets/icons/version.png
-     # Image
-     - assets/images/bg_home.png
-     - assets/images/banner_mine.png
-     - assets/images/empty.png
-     - assets/images/fox.png
-     - assets/images/bg_detail.png
-     - assets/images/bg_certificate.png
+    - assets/icons/back.png
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -133,5 +99,5 @@ flutter:
   # identifiers, which may be completely independent or the same as these.
   module:
     androidX: true
-    androidPackage: com.mrdata.xd.xiandun
-    iosBundleIdentifier: com.mrdata.xd.xiandun
+    androidPackage: com.eiviayw.faster
+    iosBundleIdentifier: com.eiviayw.faster

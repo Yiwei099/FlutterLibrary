@@ -1,6 +1,5 @@
+import 'package:FlutterLibrary/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:xiandun/utils/colors.dart';
-import 'package:xiandun/utils/icon_path.dart';
 
 class ComOption extends StatelessWidget {
   const ComOption({
@@ -35,12 +34,12 @@ class ComOption extends StatelessWidget {
                 showIcon ? const SizedBox(width: 10) : const SizedBox(),
                 Text(title),
                 Expanded(child: contentWidget != null ? contentWidget! : const SizedBox()),
-                showNext ? Image.asset(IconPath.next,width: 16,height: 16) : const SizedBox()
+                showNext ? const Icon(Icons.navigate_next) : const SizedBox()
               ],
             ),
-            showDivider ? Column(
+            showDivider ? const Column(
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 Divider(height: 1, color: MyColors.colorECECEC),
               ],
             ) : const SizedBox()

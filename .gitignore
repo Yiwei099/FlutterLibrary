@@ -33,11 +33,9 @@ xcuserdata
 
 *.pyc
 *sync/
-Icon?
 .tags*
 
 build/
-.android/
 .ios/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -47,3 +45,13 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+pubspec.lock
+.android/.gradle/
+.android/.build/
+.android/local.properties
+.android/Flutter/build
+.android/Flutter/.cxx
+.android/plugins_build_output
+#.android.gradle/
+#.android.build/

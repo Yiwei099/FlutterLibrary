@@ -1,7 +1,7 @@
+import 'package:FlutterLibrary/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:xiandun/utils/colors.dart';
 
 import 'constants/route.dart';
 
@@ -21,9 +21,9 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: '弦盾',
+          title: '框架',
           theme: ThemeData(
-            colorScheme: ColorScheme.light(
+            colorScheme: const ColorScheme.light(
               primary: MyColors.primary,
               onPrimary: Colors.white,
               onSecondary: Colors.white,
